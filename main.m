@@ -8,21 +8,26 @@ qtImages = 2;
 cont1 = 1;
 image = 1;
 
-for i=1:qtImages
+for k=1:qtImages
   
-  nameImage = strcat('im',num2str(i),'.jpg');
-  partsColor = imread(strcat('C:\Users\Bia Chacon\Desktop\ProjetoPDI\Database\',nameImage));
+  nameImage = strcat('im',num2str(k),'.jpg');
+  im = imread(strcat('C:\Users\Bia Chacon\Desktop\ProjetoPDI\Database\',nameImage));
 
+  partsColor = imresize(im,0.5);  
+  
+  figure('Name','Imagem de Entrada');
+  imshow(partsColor);
+  
   bw = im2bw(partsColor);
   figure('Name','Parts binarizada');
   imshow(bw);
   
-  for i=1:size(bw,1)
-    for j=1:size(bw,2)
-      if(bw(i,j) == 1)
-        b(i,j) = 0;
+  for g=1:size(bw,1)
+    for h=1:size(bw,2)
+      if(bw(g,h) == 1)
+        b(g,h) = 0;
        else
-        b(i,j) = 1;
+        b(g,h) = 1;
        endif
      endfor
   endfor
@@ -36,6 +41,7 @@ for i=1:qtImages
    
   rotulos = unique(imRotulos);
   so = separateObjects(imRotulos,rotulos,qtParts);
+  qtParts = qtParts-1;
   
   for a=1:qtParts
     figure('Name','imagem dividida'); 
@@ -43,9 +49,7 @@ for i=1:qtImages
   
   endfor
 
-  disp(strcat("Quantity of parts\t",num2str(qtParts)));
-  
-  part = segmentacao(partsColor,b,b);
+  part = segmentation(partsColor,b,b);
   figure('name','imagem parts segmentadas');
   imshow(part);
   
@@ -59,52 +63,34 @@ for i=1:qtImages
   ecce = zeros(1,qtParts);
   areaRP = zeros(1,qtParts); 
   
-  totalParts = totalParts + qtParts;
-  numParts(1,i) = qtParts;
+  numParts(1,k) = qtParts;
       
-  for j=1:qtParts
+  for j=1:qtParts+1
      areaRP(1,j) = regionprops(so(:,:,j),"Area").Area;
      eixoMaior(1,j) = regionprops(so(:,:,j),"MajorAxisLength").MajorAxisLength;
      eixoMenor(1,j) = regionprops(so(:,:,j),"MinorAxisLength").MinorAxisLength;
      ecce(1,j) = regionprops(so(:,:,j),"Eccentricity").Eccentricity;
   endfor
 
-  for z=1:qtParts
+  for z=1:qtParts+1
     desc(cont1,1) = double(ecce(1,z));
     desc(cont1,2) = eixoMaior(1,z);
     desc(cont1,3) = eixoMenor(1,z);
     desc(cont1,4) = areaRP(1,z);
-    cont1 = cont1 +1;  
+    cont1 = cont1 + 1;  
   endfor
-  
-    disp("\tMeus descritores ")
-    disp(desc(1,:))
-    disp(desc(2,:))
-    disp(desc(3,:))
 
-
-  if(i<qtImages)
-    close all
-  endif 
-  
 endfor
 
-
-
-#mostrando os descritores extraidos dos objetos
+disp("\n########################## MEUS DESCRITORES ##################################") 
 cont2 = 1;
-disp("\tMeus descritores ")
-for i=1:qtImages
-  disp(strcat("\nImagem \t",num2str(i)))
-  for j=1:numParts(1,i)
-    disp(numParts,i);
+for x=1:qtImages
+  disp(strcat("\nImagem ",num2str(x),":"))
+  for y=1:numParts(1,x)+1
    disp(desc(cont2,:));
    cont2 = cont2 + 1;
   endfor
 endfor
 
-disp("IDENTIFYING OBJECTS")
-disp(strcat("Total quantity of parts\t",num2str(totalParts)))
+disp("\n######################### IDENTIFICANDO OBJETOS #################################")
 identifyObjects(desc,qtImages,numParts);
-
-
