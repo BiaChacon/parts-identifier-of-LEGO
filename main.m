@@ -4,7 +4,7 @@ pkg load image
 
 totalParts = 0;
 
-qtImages = 2;
+qtImages = 50;
 cont1 = 1;
 image = 1;
 
