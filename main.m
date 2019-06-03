@@ -36,7 +36,7 @@ for k=1:qtImages
   [imRotulos,qtParts] = bwlabel(er);
   
   figure('Name','Parts binarizada e erodida'); 
-  imshow(d);
+  imshow(er);
    
   rotulos = unique(imRotulos);
   so = separateObjects(imRotulos,rotulos,qtParts);
