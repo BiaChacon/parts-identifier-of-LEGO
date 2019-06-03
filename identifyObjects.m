@@ -11,7 +11,7 @@ function identifyObjects(desc,qtImages,numParts)
     disp(strcat("\nImagem ",num2str(i),":"))
     
     for j=1:numParts(1,i)+1
-        if desc(cont2,1) ==  0.00000 
+        if desc(cont2,1) <=  0.40000 
           round = round + 1;
         elseif desc(cont2,1) <= 1 && ((desc(cont2,2)/2) >= desc(cont2,3))
             rectangle = rectangle + 1;

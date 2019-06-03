@@ -4,7 +4,7 @@ pkg load image
 
 totalParts = 0;
 
-qtImages = 50;
+qtImages = 1;
 cont1 = 1;
 image = 1;
 
@@ -13,11 +13,10 @@ for k=1:qtImages
   nameImage = strcat('im',num2str(k),'.jpg');
   im = imread(strcat('C:\Users\Bia Chacon\Desktop\ProjetoPDI\Database\',nameImage));
 
-  partsColor = imresize(im,0.5);  
-  
+  partsColor = imresize(im,0.2);
   figure('Name','Imagem de Entrada');
   imshow(partsColor);
-  
+
   bw = im2bw(partsColor);
   figure('Name','Parts binarizada');
   imshow(bw);
@@ -32,9 +31,9 @@ for k=1:qtImages
      endfor
   endfor
   
-  d = dilatar(b);
+  er = erosion(b);
   
-  [imRotulos,qtParts] = bwlabel(d);
+  [imRotulos,qtParts] = bwlabel(er);
   
   figure('Name','Parts binarizada e erodida'); 
   imshow(d);
@@ -61,12 +60,10 @@ for k=1:qtImages
   eixoMaior = zeros(1,qtParts);
   eixoMenor = zeros(1,qtParts);
   ecce = zeros(1,qtParts);
-  areaRP = zeros(1,qtParts); 
   
   numParts(1,k) = qtParts;
       
   for j=1:qtParts+1
-     areaRP(1,j) = regionprops(so(:,:,j),"Area").Area;
      eixoMaior(1,j) = regionprops(so(:,:,j),"MajorAxisLength").MajorAxisLength;
      eixoMenor(1,j) = regionprops(so(:,:,j),"MinorAxisLength").MinorAxisLength;
      ecce(1,j) = regionprops(so(:,:,j),"Eccentricity").Eccentricity;
@@ -76,7 +73,6 @@ for k=1:qtImages
     desc(cont1,1) = double(ecce(1,z));
     desc(cont1,2) = eixoMaior(1,z);
     desc(cont1,3) = eixoMenor(1,z);
-    desc(cont1,4) = areaRP(1,z);
     cont1 = cont1 + 1;  
   endfor
 
